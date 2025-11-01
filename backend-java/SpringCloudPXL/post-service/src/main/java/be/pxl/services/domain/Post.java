@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -26,10 +25,10 @@ public class Post {
     private LocalTime dateUpdated;
     private PostStatus status;
 
-    public Post(String title, String content, String author) {
+    public Post(String title, String content) {
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.author = "unknown";
         this.dateCreated = LocalTime.now();
         this.dateUpdated = LocalTime.now();
         this.status = PostStatus.CONCEPT;

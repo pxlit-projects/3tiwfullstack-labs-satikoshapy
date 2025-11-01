@@ -1,6 +1,6 @@
 package be.pxl.services.domain;
 
-enum PostStatus {
+public enum PostStatus {
     CONCEPT,
     PENDING_REVIEW,
     REJECTED,
