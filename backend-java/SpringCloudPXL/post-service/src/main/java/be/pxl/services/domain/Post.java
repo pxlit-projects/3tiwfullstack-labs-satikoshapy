@@ -4,41 +4,46 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.UUID;
 
 
 @Entity
 @Table(name = "post")
 @Data
-@NoArgsConstructor
 public class Post {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String title;
     private String content;
     private String author;
-    private LocalTime dateCreated;
-    private LocalTime dateUpdated;
+    private LocalDateTime dateCreated;
+    private LocalDateTime dateUpdated;
+    @Enumerated(EnumType.STRING)
     private PostStatus status;
+
+    public Post() {
+    }
 
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
         this.author = "unknown";
-        this.dateCreated = LocalTime.now();
-        this.dateUpdated = LocalTime.now();
+        this.dateCreated = LocalDateTime.now();
+        this.dateUpdated = LocalDateTime.now();
         this.status = PostStatus.CONCEPT;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -66,19 +71,19 @@ public class Post {
         this.author = author;
     }
 
-    public LocalTime getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(LocalTime dateCreated) {
+    public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public LocalTime getDateUpdated() {
+    public LocalDateTime getDateUpdated() {
         return dateUpdated;
     }
 
-    public void setDateUpdated(LocalTime dateUpdated) {
+    public void setDateUpdated(LocalDateTime dateUpdated) {
         this.dateUpdated = dateUpdated;
     }
 
