@@ -18,4 +18,6 @@ public interface IPostService {
     Post editPost(UUID postId, Post request) throws ChangeSetPersister.NotFoundException;
 
     List<Post> findPublishedPosts(String content, String author, LocalDate dateFrom, LocalDate dateTo);
+
+    Post getPostById(UUID postId);
 }

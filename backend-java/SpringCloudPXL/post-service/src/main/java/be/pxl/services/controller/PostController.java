@@ -52,4 +52,10 @@ public class PostController {
                 .toList();
         return ResponseEntity.ok(responses);
     }
+
+    @GetMapping("/postId")
+    public ResponseEntity<PostResponse> getPostById(@PathVariable UUID postId) {
+        Post post = postService.getPostById(postId);
+        return ResponseEntity.ok(PostMapper.toResponse(post));
+    }
 }

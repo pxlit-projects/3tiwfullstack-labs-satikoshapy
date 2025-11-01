@@ -60,4 +60,9 @@ public class PostService implements IPostService {
                 to
         );
     }
+
+    @Override
+    public Post getPostById(UUID postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+    }
 }
