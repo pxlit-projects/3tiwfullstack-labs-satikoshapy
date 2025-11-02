@@ -4,14 +4,19 @@ import be.pxl.services.client.PostServiceClient;
 import be.pxl.services.domain.Review;
 import be.pxl.services.domain.ReviewStatus;
 import be.pxl.services.domain.dtos.PostResponse;
+import be.pxl.services.domain.dtos.PostStatus;
 import be.pxl.services.exceptions.ResourceNotFoundException;
 import be.pxl.services.repository.ReviewRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 public class ReviewService implements IReviewService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReviewService.class);
 
     private final ReviewRepository reviewRepository;
     private final PostServiceClient postServiceClient;
@@ -35,8 +40,10 @@ public class ReviewService implements IReviewService {
 
         Review savedReview = reviewRepository.save(review);
 
+        postServiceClient.updatePostStatus(postId, PostStatus.PUBLISHED);
+
         // 4. US8: Send Notification (Placeholder for message bus/event)
-        System.out.println("Notification: Post " + postId + " was APPROVED by " + reviewerId);
+        logger.info("Notification: Post {} was APPROVED by {}. Status updated in PostService to PUBLISHED.", postId, reviewerId);
 
         return savedReview;
     }
@@ -62,8 +69,10 @@ public class ReviewService implements IReviewService {
 
         Review savedReview = reviewRepository.save(review);
 
+        postServiceClient.updatePostStatus(postId, PostStatus.REJECTED);
+
         // 4. US8: Send Notification (Placeholder for message bus/event)
-        System.out.println("Notification: Post " + postId + " was REJECTED by " + reviewerId + " with comment: " + request.getReviewerId());
+        logger.warn("Notification: Post {} was REJECTED by {} with comment: {}", postId, reviewerId, request.getRejectionComment());
 
         return savedReview;
     }

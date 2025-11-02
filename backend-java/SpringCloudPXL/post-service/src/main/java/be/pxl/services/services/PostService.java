@@ -4,6 +4,7 @@ import be.pxl.services.domain.Post;
 import be.pxl.services.domain.PostStatus;
 import be.pxl.services.exceptions.ResourceNotFoundException;
 import be.pxl.services.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -64,5 +65,15 @@ public class PostService implements IPostService {
     @Override
     public Post getPostById(UUID postId) {
         return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+    }
+
+    @Override
+    @Transactional
+    public void updatePostStatus(UUID postId, PostStatus newStatus) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+
+        post.setStatus(newStatus);
+        post.setDateUpdated(LocalDateTime.now());
+        postRepository.save(post);
     }
 }

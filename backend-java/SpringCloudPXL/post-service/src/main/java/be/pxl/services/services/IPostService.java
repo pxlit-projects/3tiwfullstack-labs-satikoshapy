@@ -1,6 +1,7 @@
 package be.pxl.services.services;
 
 import be.pxl.services.domain.Post;
+import be.pxl.services.domain.PostStatus;
 import be.pxl.services.domain.dtos.PostRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -20,4 +21,6 @@ public interface IPostService {
     List<Post> findPublishedPosts(String content, String author, LocalDate dateFrom, LocalDate dateTo);
 
     Post getPostById(UUID postId);
+
+    void updatePostStatus(UUID postId, PostStatus newStatus);
 }

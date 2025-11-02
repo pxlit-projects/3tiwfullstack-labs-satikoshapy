@@ -1,6 +1,7 @@
 package be.pxl.services.controller;
 
 import be.pxl.services.domain.Post;
+import be.pxl.services.domain.PostStatus;
 import be.pxl.services.domain.dtos.PostMapper;
 import be.pxl.services.domain.dtos.PostRequest;
 import be.pxl.services.domain.dtos.PostResponse;
@@ -33,9 +34,9 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable UUID postId, @Valid @RequestBody PostRequest request) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<PostResponse> updatePost(@PathVariable String postId, @Valid @RequestBody PostRequest request) throws ChangeSetPersister.NotFoundException {
         //String author = AuthUtils.getCurrentUserIdentifier();
-        Post updatedPost = postService.editPost(postId, PostMapper.toEntity(request));
+        Post updatedPost = postService.editPost(UUID.fromString(postId), PostMapper.toEntity(request));
         return ResponseEntity.ok(PostMapper.toResponse(updatedPost));
     }
 
@@ -53,9 +54,18 @@ public class PostController {
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/postId")
-    public ResponseEntity<PostResponse> getPostById(@PathVariable UUID postId) {
-        Post post = postService.getPostById(postId);
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponse> getPostById(@PathVariable String postId) {
+        Post post = postService.getPostById(UUID.fromString(postId));
         return ResponseEntity.ok(PostMapper.toResponse(post));
+    }
+
+    @PutMapping("/{postId}/status/{newStatus}")
+    public ResponseEntity<Void> updatePostStatus(
+            @PathVariable String postId,
+            @PathVariable PostStatus newStatus
+    ) {
+        postService.updatePostStatus(UUID.fromString(postId), newStatus);
+        return ResponseEntity.ok().build();
     }
 }

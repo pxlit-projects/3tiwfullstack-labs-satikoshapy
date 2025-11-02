@@ -22,21 +22,21 @@ public class ReviewController {
     }
 
     @PostMapping("/{postId}/approve")
-    public ResponseEntity<Review> approvePost(@PathVariable UUID postId) {
+    public ResponseEntity<Review> approvePost(@PathVariable String postId) {
         String reviewerId = "editor_mock_id"; // AuthUtils.getCurrentUserIdentifier();
 
-        Review review = reviewService.approvePost(postId, reviewerId);
+        Review review = reviewService.approvePost(UUID.fromString(postId), reviewerId);
         return ResponseEntity.status(HttpStatus.CREATED).body(review);
     }
 
     @PostMapping("/{postId}/reject")
     public ResponseEntity<Review> rejectPost(
-            @PathVariable UUID postId,
+            @PathVariable String postId,
             @Valid @RequestBody ReviewRequest request) {
 
         String reviewerId = "editor_mock_id"; // AuthUtils.getCurrentUserIdentifier();
 
-        Review review = reviewService.rejectPost(postId, reviewerId, ReviewMapper.toEntity(request));
+        Review review = reviewService.rejectPost(UUID.fromString(postId), reviewerId, ReviewMapper.toEntity(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(review);
     }
 }
