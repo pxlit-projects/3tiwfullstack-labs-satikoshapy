@@ -23,7 +23,7 @@
 	</developers>
 	<modules>
 		<module>post-service</module>
-		<module>ReviewService</module>
+		<module>review-service</module>
 	</modules>
 	<scm>
 		<connection/>

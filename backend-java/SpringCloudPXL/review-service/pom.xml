@@ -7,10 +7,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ReviewService</artifactId>
+    <artifactId>review-service</artifactId>
     <packaging>jar</packaging>
 
-    <name>ReviewService</name>
+    <name>review-service</name>
     <url>https://maven.apache.org</url>
 
     <properties>
