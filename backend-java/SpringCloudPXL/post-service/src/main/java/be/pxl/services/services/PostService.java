@@ -32,12 +32,12 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public Post editPost(UUID postId, Post request) {
+    public Post editPost(UUID postId, Post request, String author) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
 
-//        if (!post.getAuthor().equals(author)) {
-//            throw new IllegalStateException("Only the author can modify this post.");
-//        }
+        if (!post.getAuthor().equals(author)) {
+            throw new IllegalStateException("Only the author can modify this post.");
+        }
 
         if (post.getStatus() != PostStatus.DRAFT && post.getStatus() != PostStatus.REJECTED) {
             throw new IllegalStateException("Post can only be edited when status is DRAFT or REJECTED.");

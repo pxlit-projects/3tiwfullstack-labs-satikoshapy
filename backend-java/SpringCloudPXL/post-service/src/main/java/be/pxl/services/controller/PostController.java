@@ -34,9 +34,9 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable String postId, @Valid @RequestBody PostRequest request) throws ChangeSetPersister.NotFoundException {
-        //String author = AuthUtils.getCurrentUserIdentifier();
-        Post updatedPost = postService.editPost(UUID.fromString(postId), PostMapper.toEntity(request));
+    public ResponseEntity<PostResponse> updatePost(@PathVariable String postId, @Valid @RequestBody PostRequest request
+            , @RequestHeader("user") String user) throws ChangeSetPersister.NotFoundException {
+        Post updatedPost = postService.editPost(UUID.fromString(postId), PostMapper.toEntity(request), user);
         return ResponseEntity.ok(PostMapper.toResponse(updatedPost));
     }
 
