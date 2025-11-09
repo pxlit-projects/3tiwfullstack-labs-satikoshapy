@@ -3,6 +3,7 @@ package be.pxl.services.controller;
 import be.pxl.services.domain.Review;
 import be.pxl.services.domain.dtos.ReviewMapper;
 import be.pxl.services.domain.dtos.ReviewRequest;
+import be.pxl.services.domain.dtos.SubmitReviewRequest;
 import be.pxl.services.service.IReviewService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,12 @@ public class ReviewController {
 
     public ReviewController(IReviewService reviewService) {
         this.reviewService = reviewService;
+    }
+
+    @PostMapping("/submit")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void submit(@RequestBody SubmitReviewRequest req) {
+        reviewService.submit(req);
     }
 
     @PostMapping("/{postId}/approve")

@@ -75,13 +75,18 @@ public class PostService implements IPostService {
 
     @Override
     public Post getPostById(UUID postId, String user) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
 
-        if (post.getStatus() != PostStatus.PUBLISHED &&
-                !post.getAuthor().equalsIgnoreCase(user)) {
-            log.warn("Not Allowed");
+        boolean isPublished = post.getStatus() == PostStatus.PUBLISHED;
+        boolean isAuthor = user != null && user.equalsIgnoreCase(post.getAuthor());
+        boolean isReviewer = user != null && user.equalsIgnoreCase("reviewer");
+
+        if (!isPublished && !(isAuthor || isReviewer)) {
+            log.warn("Access denied for user '{}'", user);
             throw new IllegalStateException("You are not allowed to view this post.");
         }
+
         return post;
     }
 

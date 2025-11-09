@@ -30,3 +30,10 @@ services:
       MYSQL_DATABASE: commentservice_db
     ports:
       - "3308:3306"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP
+      - "15672:15672" # mgmt UI
