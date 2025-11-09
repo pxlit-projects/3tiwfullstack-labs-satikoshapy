@@ -72,7 +72,7 @@ public class ReviewService implements IReviewService {
         postServiceClient.updatePostStatus(postId, PostStatus.REJECTED);
 
         // 4. US8: Send Notification (Placeholder for message bus/event)
-        logger.warn("Notification: Post {} was REJECTED by {} with comment: {}", postId, reviewerId, request.getRejectionComment());
+        logger.info("Notification: Post {} was REJECTED by {} with comment: {}", postId, reviewerId, request.getRejectionComment());
 
         return savedReview;
     }
