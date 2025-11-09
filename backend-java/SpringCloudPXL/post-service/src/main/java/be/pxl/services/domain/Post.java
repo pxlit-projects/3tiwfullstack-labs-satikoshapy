@@ -18,6 +18,7 @@ public class Post {
     private UUID id;
 
     private String title;
+    @Lob
     private String content;
     private String author;
     private LocalDateTime dateCreated;
@@ -34,7 +35,7 @@ public class Post {
         this.author = "unknown";
         this.dateCreated = LocalDateTime.now();
         this.dateUpdated = LocalDateTime.now();
-        this.status = PostStatus.CONCEPT;
+        this.status = PostStatus.DRAFT;
     }
 
     public UUID getId() {

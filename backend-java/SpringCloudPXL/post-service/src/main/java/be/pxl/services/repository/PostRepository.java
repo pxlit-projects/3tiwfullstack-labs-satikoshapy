@@ -15,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     @Query("SELECT p FROM Post p " +
             "WHERE p.status = :status " +
-            "AND (:#{#contentFilter == null} IS TRUE OR LOWER(p.content) LIKE LOWER(CONCAT('%', :contentFilter, '%'))) " +
+            "AND (:#{#contentFilter == null} IS TRUE OR LOWER(cast(p.content as string)) LIKE LOWER(CONCAT('%', :contentFilter, '%'))) " +
             "AND (:#{#authorFilter == null} IS TRUE OR LOWER(p.author) LIKE LOWER(CONCAT('%', :authorFilter, '%'))) " +
             "AND (:#{#from == null} IS TRUE OR p.dateCreated >= :from) " +
             "AND (:#{#to == null} IS TRUE OR p.dateCreated <= :to) " +

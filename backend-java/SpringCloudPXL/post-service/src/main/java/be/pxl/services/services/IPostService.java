@@ -20,7 +20,7 @@ public interface IPostService {
 
     List<Post> findPublishedPosts(String content, String author, LocalDate dateFrom, LocalDate dateTo);
 
-    Post getPostById(UUID postId);
+    Post getPostById(UUID postId, String user);
 
     void updatePostStatus(UUID postId, PostStatus newStatus);
 }

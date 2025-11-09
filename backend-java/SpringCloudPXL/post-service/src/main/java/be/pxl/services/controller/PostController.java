@@ -55,8 +55,8 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> getPostById(@PathVariable String postId) {
-        Post post = postService.getPostById(UUID.fromString(postId));
+    public ResponseEntity<PostResponse> getPostById(@PathVariable String postId, @RequestHeader("user") String user) {
+        Post post = postService.getPostById(UUID.fromString(postId), user);
         return ResponseEntity.ok(PostMapper.toResponse(post));
     }
 
