@@ -1,10 +1,12 @@
 package be.pxl.services.services;
 
+import be.pxl.services.client.ReviewClient;
 import be.pxl.services.domain.Post;
 import be.pxl.services.domain.PostStatus;
 import be.pxl.services.exceptions.ResourceNotFoundException;
 import be.pxl.services.repository.PostRepository;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,11 +21,13 @@ import java.util.UUID;
 public class PostService implements IPostService {
 
     private final PostRepository postRepository;
+    private final ReviewClient reviewClient;
 
     private final Logger log = LoggerFactory.getLogger(PostService.class);
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, ReviewClient reviewClient) {
         this.postRepository = postRepository;
+        this.reviewClient = reviewClient;
     }
 
     @Override
@@ -79,6 +83,27 @@ public class PostService implements IPostService {
             throw new IllegalStateException("You are not allowed to view this post.");
         }
         return post;
+    }
+
+    @Override
+    public Post submitForReview(UUID id, String user) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post not found: " + id));
+
+        if (!post.getAuthor().equalsIgnoreCase(user)) {
+            throw new IllegalStateException("Only the author can submit their post");
+        }
+        if (post.getStatus() != PostStatus.DRAFT) {
+            throw new BadRequestException("Only DRAFT posts can be submitted");
+        }
+
+        // mark as pending_review, then call review-service
+        post.setStatus(PostStatus.PENDING_REVIEW);
+        post.setDateUpdated(LocalDateTime.now());
+        Post saved = postRepository.save(post);
+
+        reviewClient.submit(new ReviewClient.SubmitReviewRequest(saved.getId(), saved.getAuthor(), saved.getTitle()));
+        log.info("Post {} submitted for review by {}", id, user);
+        return saved;
     }
 
     @Override

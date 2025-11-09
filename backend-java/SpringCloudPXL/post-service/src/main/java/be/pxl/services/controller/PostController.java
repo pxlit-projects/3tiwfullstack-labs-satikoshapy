@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static be.pxl.services.domain.dtos.PostMapper.toResponse;
+
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -37,7 +39,7 @@ public class PostController {
     public ResponseEntity<PostResponse> updatePost(@PathVariable String postId, @Valid @RequestBody PostRequest request
             , @RequestHeader("user") String user) throws ChangeSetPersister.NotFoundException {
         Post updatedPost = postService.editPost(UUID.fromString(postId), PostMapper.toEntity(request), user);
-        return ResponseEntity.ok(PostMapper.toResponse(updatedPost));
+        return ResponseEntity.ok(toResponse(updatedPost));
     }
 
     @GetMapping
@@ -57,7 +59,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable String postId, @RequestHeader("user") String user) {
         Post post = postService.getPostById(UUID.fromString(postId), user);
-        return ResponseEntity.ok(PostMapper.toResponse(post));
+        return ResponseEntity.ok(toResponse(post));
     }
 
     @PutMapping("/{postId}/status/{newStatus}")
@@ -67,5 +69,11 @@ public class PostController {
     ) {
         postService.updatePostStatus(UUID.fromString(postId), newStatus);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/submit")
+    public PostResponse submit(@RequestHeader("user") String user, @PathVariable UUID id) {
+        Post saved = postService.submitForReview(id, user);
+        return toResponse(saved);
     }
 }

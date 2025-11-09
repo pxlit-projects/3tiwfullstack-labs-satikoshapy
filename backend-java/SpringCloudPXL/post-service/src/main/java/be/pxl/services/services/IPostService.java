@@ -22,5 +22,7 @@ public interface IPostService {
 
     Post getPostById(UUID postId, String user);
 
+    Post submitForReview(UUID postId, String user);
+
     void updatePostStatus(UUID postId, PostStatus newStatus);
 }
