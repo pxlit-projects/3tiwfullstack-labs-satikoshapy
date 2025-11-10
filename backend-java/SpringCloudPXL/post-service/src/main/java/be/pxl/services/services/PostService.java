@@ -91,6 +91,7 @@ public class PostService implements IPostService {
     }
 
     @Override
+    @Transactional
     public Post submitForReview(UUID id, String user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post not found: " + id));
 
