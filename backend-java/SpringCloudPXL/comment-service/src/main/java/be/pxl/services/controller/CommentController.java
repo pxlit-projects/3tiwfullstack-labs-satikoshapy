@@ -34,4 +34,17 @@ public class CommentController {
                                       @RequestHeader("user") String user) {
         return service.getAllCommentsForPost(postId, user);
     }
+
+    @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable UUID commentId,
+                       @RequestHeader("user") String user) {
+        service.deleteComment(commentId, user);
+    }
+
+    @PutMapping("/posts/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommentResponse editComment(UUID commentId, @RequestHeader("user") String user, CreateCommentRequest req) {
+        return service.editComment(commentId, user, req);
+    }
 }

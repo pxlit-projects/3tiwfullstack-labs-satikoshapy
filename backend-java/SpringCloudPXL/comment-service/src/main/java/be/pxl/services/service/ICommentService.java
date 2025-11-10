@@ -13,4 +13,8 @@ public interface ICommentService {
     CommentResponse addComment(UUID postId, String user, @Valid CreateCommentRequest req);
 
     List<CommentResponse> getAllCommentsForPost(UUID postId, String user);
+
+    void deleteComment(UUID commentId, String user);
+
+    CommentResponse editComment(UUID commentId, String user, CreateCommentRequest req);
 }

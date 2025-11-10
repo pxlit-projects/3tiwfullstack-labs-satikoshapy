@@ -8,6 +8,7 @@ import be.pxl.services.domain.dtos.CommentResponse;
 import be.pxl.services.domain.dtos.CreateCommentRequest;
 import be.pxl.services.exceptions.ResourceNotFoundException;
 import be.pxl.services.repository.CommentRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,8 +28,6 @@ public class CommentService implements ICommentService {
 
     @Override
     public CommentResponse addComment(UUID postId, String user, CreateCommentRequest req) {
-        PostResponse post = getVisiblePostOrThrow(postId, user);
-
         Comment c = new Comment();
         c.setPostId(postId);
         c.setAuthor(user);
@@ -41,12 +40,39 @@ public class CommentService implements ICommentService {
 
     @Override
     public List<CommentResponse> getAllCommentsForPost(UUID postId, String user) {
-        return List.of();
+        return commentRepository.findByPostIdOrderByCreatedAtAsc(postId).stream().map(CommentMapper::toResponse).toList();
     }
 
-    private PostResponse getVisiblePostOrThrow(UUID postId, String user) {
+    @Override
+    @Transactional
+    public void deleteComment(UUID commentId, String user) {
+        Comment c = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment not found: " + commentId));
+
+        boolean isAuthor = user != null && user.equalsIgnoreCase(c.getAuthor());
+        boolean isReviewer = user != null && user.equalsIgnoreCase("reviewer");
+        if (!(isAuthor || isReviewer)) {
+            throw new IllegalStateException("You are not allowed to delete this comment.");
+        }
+        commentRepository.delete(c);
+    }
+
+    @Override
+    @Transactional
+    public CommentResponse editComment(UUID id, String user, CreateCommentRequest req) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment not found: " + id));
+        boolean isAuthor = user != null && user.equalsIgnoreCase(comment.getAuthor());
+        boolean isReviewer = user != null && user.equalsIgnoreCase("reviewer");
+        if (!(isAuthor || isReviewer)) {
+            throw new IllegalStateException("You are not allowed to edit this comment.");
+        }
+        comment.setContent(req.content().trim());
+        comment.setUpdatedAt(java.time.LocalDateTime.now());
+        return CommentMapper.toResponse(commentRepository.save(comment));
+    }
+
+    private PostResponse getVisiblePostOrThrow(UUID postId) {
         try {
-            return postServiceClient.getPostById(postId, user);
+            return postServiceClient.getPostById(postId, "comment");
         } catch (Exception ex) {
             throw new ResourceNotFoundException("Post not found or not visible: " + postId);
         }
