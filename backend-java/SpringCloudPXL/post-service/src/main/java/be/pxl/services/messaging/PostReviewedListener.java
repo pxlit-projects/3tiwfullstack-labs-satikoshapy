@@ -2,15 +2,14 @@ package be.pxl.services.messaging;
 
 import be.pxl.services.domain.PostStatus;
 import be.pxl.services.repository.PostRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+
+import static be.pxl.services.messaging.MessagingNames.DECISIONS_QUEUE;
 
 @Component
 public class PostReviewedListener {
@@ -22,17 +21,23 @@ public class PostReviewedListener {
         this.postRepository = posts;
     }
 
-    @RabbitListener(queues = RabbitConfig.DECISIONS_QUEUE)
-    public void onReviewed(@Payload PostReviewedEvent evt) {
-        log.info("Received review decision for {}: {}", evt.postId(), evt.decision());
-        postRepository.findById(evt.postId()).ifPresent(post -> {
-            switch (evt.decision().toUpperCase()) {
+    @RabbitListener(queues = DECISIONS_QUEUE)
+    public void onReviewed(PostReviewedEvent evt) {
+        log.info("Received decision: postId={}, decision={}", evt.postId(), evt.decision());
+
+        postRepository.findById(evt.postId()).ifPresentOrElse(post -> {
+            String decision = evt.decision() == null ? "" : evt.decision().toUpperCase();
+            switch (decision) {
                 case "APPROVED" -> post.setStatus(PostStatus.PUBLISHED);
                 case "REJECTED" -> post.setStatus(PostStatus.REJECTED);
-                default -> { return; }
+                default -> {
+                    log.warn("Ignoring unknown decision '{}' for post {}", evt.decision(), evt.postId());
+                    return;
+                }
             }
             post.setDateUpdated(LocalDateTime.now());
             postRepository.save(post);
-        });
+            log.info("Post {} updated to {}", post.getId(), post.getStatus());
+        }, () -> log.warn("Post {} not found; dropping decision", evt.postId()));
     }
 }

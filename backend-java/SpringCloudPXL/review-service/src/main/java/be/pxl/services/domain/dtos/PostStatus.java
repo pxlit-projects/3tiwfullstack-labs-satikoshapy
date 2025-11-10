@@ -1,8 +1,9 @@
 package be.pxl.services.domain.dtos;
 
 public enum PostStatus {
-    CONCEPT,
+    DRAFT,
     PENDING_REVIEW,
+    APPROVED,
     REJECTED,
     PUBLISHED
 }

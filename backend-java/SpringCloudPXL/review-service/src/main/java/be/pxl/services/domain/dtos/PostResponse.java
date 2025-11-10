@@ -12,4 +12,6 @@ public record PostResponse(
         LocalDateTime dateCreated,
         LocalDateTime dateUpdated
 ) {
+    public PostResponse {
+    }
 }

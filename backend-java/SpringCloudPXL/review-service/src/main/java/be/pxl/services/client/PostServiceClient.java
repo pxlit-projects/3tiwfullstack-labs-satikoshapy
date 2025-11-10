@@ -16,6 +16,4 @@ public interface PostServiceClient {
     @GetMapping("/{postId}")
     PostResponse getPostById(@PathVariable("postId") UUID postId, @RequestHeader("user") String user);
 
-    @PutMapping("/{postId}/status/{newStatus}")
-    void updatePostStatus(@PathVariable("postId") UUID postId, @PathVariable("newStatus") PostStatus newStatus);
 }
