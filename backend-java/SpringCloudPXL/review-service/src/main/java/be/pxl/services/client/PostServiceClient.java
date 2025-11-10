@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.UUID;
 
-@FeignClient(name = "postservice", url = "api/posts")
+@FeignClient(name = "post-service", url = "http://localhost:8081", path = "/api/posts")
 public interface PostServiceClient {
 
-    // http://localhost:8081/api/posts/{postId}
     @GetMapping("/{postId}")
     PostResponse getPostById(@PathVariable("postId") UUID postId, @RequestHeader("user") String user);
 
