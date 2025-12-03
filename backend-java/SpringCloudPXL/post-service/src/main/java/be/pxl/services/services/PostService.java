@@ -3,10 +3,10 @@ package be.pxl.services.services;
 import be.pxl.services.client.ReviewClient;
 import be.pxl.services.domain.Post;
 import be.pxl.services.domain.PostStatus;
+import be.pxl.services.exceptions.BadRequestException;
 import be.pxl.services.exceptions.ResourceNotFoundException;
 import be.pxl.services.repository.PostRepository;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -80,9 +80,9 @@ public class PostService implements IPostService {
 
         boolean isPublished = post.getStatus() == PostStatus.PUBLISHED;
         boolean isAuthor = user != null && user.equalsIgnoreCase(post.getAuthor());
-        boolean isReviewer = user != null && user.equalsIgnoreCase("reviewer");
+        boolean isInternal = user != null && user.equalsIgnoreCase("internal");
 
-        if (!isPublished && !(isAuthor || isReviewer)) {
+        if (!isPublished && !(isAuthor || isInternal)) {
             log.warn("Access denied for user '{}'", user);
             throw new IllegalStateException("You are not allowed to view this post.");
         }

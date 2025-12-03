@@ -9,6 +9,8 @@ import be.pxl.services.domain.dtos.CreateCommentRequest;
 import be.pxl.services.exceptions.ResourceNotFoundException;
 import be.pxl.services.repository.CommentRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,8 @@ import java.util.UUID;
 
 @Service
 public class CommentService implements ICommentService {
+
+    Logger Logger = LoggerFactory.getLogger(CommentService.class);
 
     private final CommentRepository commentRepository;
     private final PostServiceClient postServiceClient;
@@ -40,6 +44,8 @@ public class CommentService implements ICommentService {
 
     @Override
     public List<CommentResponse> getAllCommentsForPost(UUID postId, String user) {
+        Logger.info("Getting comments for user " + user);
+        getVisiblePostOrThrow(postId);
         return commentRepository.findByPostIdOrderByCreatedAtAsc(postId).stream().map(CommentMapper::toResponse).toList();
     }
 
@@ -72,8 +78,10 @@ public class CommentService implements ICommentService {
 
     private PostResponse getVisiblePostOrThrow(UUID postId) {
         try {
-            return postServiceClient.getPostById(postId, "comment");
+            Logger.info("Trying to fetch visible post: " + postId);
+            return postServiceClient.getPostById(postId, "internal");
         } catch (Exception ex) {
+            Logger.error("Error while fetching visible post: " + postId, ex);
             throw new ResourceNotFoundException("Post not found or not visible: " + postId);
         }
     }

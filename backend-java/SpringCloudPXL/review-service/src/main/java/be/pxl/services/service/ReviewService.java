@@ -85,7 +85,7 @@ public class ReviewService implements IReviewService {
 
     private PostResponse getPostById(UUID postId) {
         try {
-            return postServiceClient.getPostById(postId, "reviewer");
+            return postServiceClient.getPostById(postId, "internal");
         } catch (Exception e) {
             logger.warn(e.getMessage());
             throw new ResourceNotFoundException("Post not found with ID: " + postId + " in PostService.");
