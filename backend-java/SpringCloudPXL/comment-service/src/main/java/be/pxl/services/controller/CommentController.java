@@ -2,7 +2,6 @@ package be.pxl.services.controller;
 
 import be.pxl.services.domain.dtos.CommentResponse;
 import be.pxl.services.domain.dtos.CreateCommentRequest;
-import be.pxl.services.service.CommentService;
 import be.pxl.services.service.ICommentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,7 @@ public class CommentController {
 
     private final ICommentService service;
 
-    public CommentController(CommentService service) {
+    public CommentController(ICommentService service) {
         this.service = service;
     }
 
@@ -42,9 +41,9 @@ public class CommentController {
         service.deleteComment(commentId, user);
     }
 
-    @PutMapping("/posts/{postId}")
+    @PutMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public CommentResponse editComment(UUID commentId, @RequestHeader("user") String user, CreateCommentRequest req) {
+    public CommentResponse editComment(UUID commentId, @RequestHeader("user") String user, @Valid @RequestBody CreateCommentRequest req) {
         return service.editComment(commentId, user, req);
     }
 }

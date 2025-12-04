@@ -1,6 +1,5 @@
 package be.pxl.services.service;
 
-import be.pxl.services.client.PostResponse;
 import be.pxl.services.client.PostServiceClient;
 import be.pxl.services.domain.Comment;
 import be.pxl.services.domain.dtos.CommentMapper;
@@ -55,8 +54,8 @@ public class CommentService implements ICommentService {
         Comment c = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment not found: " + commentId));
 
         boolean isAuthor = user != null && user.equalsIgnoreCase(c.getAuthor());
-        boolean isReviewer = user != null && user.equalsIgnoreCase("reviewer");
-        if (!(isAuthor || isReviewer)) {
+        boolean isInternal = user != null && user.equalsIgnoreCase("internal");
+        if (!(isAuthor || isInternal)) {
             throw new IllegalStateException("You are not allowed to delete this comment.");
         }
         commentRepository.delete(c);
@@ -67,8 +66,8 @@ public class CommentService implements ICommentService {
     public CommentResponse editComment(UUID id, String user, CreateCommentRequest req) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment not found: " + id));
         boolean isAuthor = user != null && user.equalsIgnoreCase(comment.getAuthor());
-        boolean isReviewer = user != null && user.equalsIgnoreCase("reviewer");
-        if (!(isAuthor || isReviewer)) {
+        boolean isInternal = user != null && user.equalsIgnoreCase("internal");
+        if (!(isAuthor || isInternal)) {
             throw new IllegalStateException("You are not allowed to edit this comment.");
         }
         comment.setContent(req.content().trim());
@@ -76,10 +75,10 @@ public class CommentService implements ICommentService {
         return CommentMapper.toResponse(commentRepository.save(comment));
     }
 
-    private PostResponse getVisiblePostOrThrow(UUID postId) {
+    private void getVisiblePostOrThrow(UUID postId) {
         try {
             Logger.info("Trying to fetch visible post: " + postId);
-            return postServiceClient.getPostById(postId, "internal");
+            postServiceClient.getPostById(postId, "internal");
         } catch (Exception ex) {
             Logger.error("Error while fetching visible post: " + postId, ex);
             throw new ResourceNotFoundException("Post not found or not visible: " + postId);
