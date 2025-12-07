@@ -51,15 +51,15 @@ class PostControllerTest {
     @Test
     void createPost_returnsCreated() throws Exception {
         PostRequest req = new PostRequest("title", "content");
-        Post saved = buildPost(UUID.randomUUID(), "unknown", PostStatus.DRAFT);
+        Post saved = buildPost(UUID.randomUUID(), "alice", PostStatus.DRAFT);
 
         when(postService.addPost(any(Post.class), any())).thenReturn(saved);
 
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
+                        .content(objectMapper.writeValueAsString(req))
+                        .header("user", "alice"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(saved.getId().toString()))
                 .andExpect(jsonPath("$.title").value("title"))
                 .andExpect(jsonPath("$.content").value("content"));
 

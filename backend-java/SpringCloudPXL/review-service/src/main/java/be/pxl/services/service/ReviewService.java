@@ -65,7 +65,6 @@ public class ReviewService implements IReviewService {
             throw new IllegalStateException("Post review is already " + review.getStatus() + ".");
         }
 
-        // 3. US9: Add rejection comment and update status
         if (request.getRejectionComment() == null || request.getRejectionComment().trim().isEmpty()) {
             throw new IllegalStateException("Rejection requires a comment.");
         }
