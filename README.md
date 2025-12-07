@@ -264,5 +264,3 @@ Covers:
 | Build             | Maven                                     |
 
 
-Just tell me!
-
