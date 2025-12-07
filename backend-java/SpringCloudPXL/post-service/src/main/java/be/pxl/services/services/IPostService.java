@@ -2,8 +2,6 @@ package be.pxl.services.services;
 
 import be.pxl.services.domain.Post;
 import be.pxl.services.domain.PostStatus;
-import be.pxl.services.domain.dtos.PostRequest;
-import jakarta.validation.Valid;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +12,7 @@ import java.util.UUID;
 @Service
 public interface IPostService {
 
-    Post addPost(Post post);
+    Post addPost(Post post, String user);
 
     Post editPost(UUID postId, Post request, String user) throws ChangeSetPersister.NotFoundException;
 

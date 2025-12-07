@@ -31,7 +31,8 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public Post addPost(Post post) {
+    public Post addPost(Post post, String user) {
+        post.setAuthor(user);
         return postRepository.save(post);
     }
 

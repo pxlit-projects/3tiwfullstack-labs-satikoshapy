@@ -47,10 +47,10 @@ class PostServiceTest {
 
     @Test
     void addPost_savesPost() {
-        Post p = buildPost(null, "alice", PostStatus.DRAFT);
+        Post p = new Post("title", "content");
         when(postRepository.save(p)).thenReturn(p);
 
-        Post result = postService.addPost(p);
+        Post result = postService.addPost(p, "alice");
 
         assertSame(p, result);
         verify(postRepository).save(p);

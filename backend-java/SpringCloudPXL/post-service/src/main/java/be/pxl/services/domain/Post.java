@@ -32,9 +32,8 @@ public class Post {
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
-        this.author = "unknown";
         this.dateCreated = LocalDateTime.now();
-        this.dateUpdated = LocalDateTime.now();
+        this.dateUpdated = null;
         this.status = PostStatus.DRAFT;
     }
 

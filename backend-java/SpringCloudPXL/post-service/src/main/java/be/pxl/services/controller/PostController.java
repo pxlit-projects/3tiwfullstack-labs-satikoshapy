@@ -30,8 +30,8 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@Valid @RequestBody PostRequest post) {
-        Post saved = postService.addPost(PostMapper.toEntity(post));
+    public ResponseEntity<Post> createPost(@Valid @RequestBody PostRequest post, @RequestHeader("user") String user) {
+        Post saved = postService.addPost(PostMapper.toEntity(post), user);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 

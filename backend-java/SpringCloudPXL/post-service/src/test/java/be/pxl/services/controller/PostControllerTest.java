@@ -53,7 +53,7 @@ class PostControllerTest {
         PostRequest req = new PostRequest("title", "content");
         Post saved = buildPost(UUID.randomUUID(), "unknown", PostStatus.DRAFT);
 
-        when(postService.addPost(any(Post.class))).thenReturn(saved);
+        when(postService.addPost(any(Post.class), any())).thenReturn(saved);
 
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -63,7 +63,7 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.title").value("title"))
                 .andExpect(jsonPath("$.content").value("content"));
 
-        verify(postService).addPost(any(Post.class));
+        verify(postService).addPost(any(Post.class), any());
     }
 
     @Test
