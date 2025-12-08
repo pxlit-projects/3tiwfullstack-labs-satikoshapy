@@ -56,8 +56,10 @@ public class CommentService implements ICommentService {
         boolean isAuthor = user != null && user.equalsIgnoreCase(c.getAuthor());
         boolean isInternal = user != null && user.equalsIgnoreCase("internal");
         if (!(isAuthor || isInternal)) {
+            Logger.error("Action not allowed for this user");
             throw new IllegalStateException("You are not allowed to delete this comment.");
         }
+        Logger.info("Deleting comment " + commentId);
         commentRepository.delete(c);
     }
 
@@ -72,6 +74,7 @@ public class CommentService implements ICommentService {
         }
         comment.setContent(req.content().trim());
         comment.setUpdatedAt(java.time.LocalDateTime.now());
+        Logger.info("Successfully edited comemnt: " + comment);
         return CommentMapper.toResponse(commentRepository.save(comment));
     }
 

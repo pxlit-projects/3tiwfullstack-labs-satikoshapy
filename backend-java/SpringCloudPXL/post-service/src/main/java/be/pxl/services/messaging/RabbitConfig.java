@@ -35,7 +35,6 @@ public class RabbitConfig {
         return new Jackson2JsonMessageConverter();
     }
 
-    // Optional, but ensures the listener uses the JSON converter
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             SimpleRabbitListenerContainerFactoryConfigurer configurer,
