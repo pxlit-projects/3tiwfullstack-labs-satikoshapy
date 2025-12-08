@@ -36,14 +36,14 @@ public class CommentController {
 
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID commentId,
+    public void delete(@PathVariable String commentId,
                        @RequestHeader("user") String user) {
-        service.deleteComment(commentId, user);
+        service.deleteComment(UUID.fromString(commentId), user);
     }
 
     @PutMapping("/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public CommentResponse editComment(UUID commentId, @RequestHeader("user") String user, @Valid @RequestBody CreateCommentRequest req) {
-        return service.editComment(commentId, user, req);
+    public CommentResponse editComment(@PathVariable  String commentId, @RequestHeader("user") String user, @Valid @RequestBody CreateCommentRequest req) {
+        return service.editComment(UUID.fromString(commentId), user, req);
     }
 }
